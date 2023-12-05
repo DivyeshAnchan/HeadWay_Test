@@ -151,7 +151,7 @@ app.use(
 app.get('/', (req, res) => {
   if (req.session.username) {
     res.render('index')
-    console.log(req.session)
+    // console.log(req.session)
   } else res.redirect('/login')
 })
 app.get('/login', (req, res) => {
@@ -228,10 +228,14 @@ app.post('/forgot', async (req, res) => {
     send(email, finals)
 
     res.redirect('/confirm')
-    setTimeout(async () => {
-      await mongoose.connection.dropCollection('forgots')
-    }, 180000)
-    console.log(`destroyed`)
+    try {
+      setTimeout(async () => {
+        await mongoose.connection.dropCollection('forgots')
+      }, 180000)
+      console.log(`destroyed`)
+    } catch (err) {
+      console.log(err)
+    }
   } else {
     res.render('forgot', { msg: 'User Doesnt Exist' })
   }
